@@ -99,15 +99,14 @@ barchart-->
 
     
             let xAxisSettings = d3.axisBottom(x)
-                .tickSize(10)
+                .tickSize(0)
                 // .tickFormat(d3.format(".0f")) //what format do you want https://github.com/d3/d3-format 
                 .tickPadding(10)
-                .ticks(10)
-                // .tickSizeOuter(0)
+                .tickSizeOuter(5)
                 .tickSizeInner(0)
                 .tickFormat((d,i) => {
-                    if (i % 100 == 0) {
-                        return ""
+                    if (i % 150 == 0) {
+                        return d3.timeFormat("%Y")(new Date(d))
                     } else {
                         return ""
                     }
