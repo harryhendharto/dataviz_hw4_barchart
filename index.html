@@ -28,16 +28,19 @@ barchart-->
                 /* border: 2px solid green; */
             }
 
-            .bar {
-                fill: blue
+            .tick line{
+                opacity: 0.2;
+                stroke-dasharray: 3 5; 
             }
+
+                
         </style>
     </head>
     
     <body>
         <div class="chart-container">
             <h1 class="headline">
-                Test Test asda
+                More Than 3 Million Americans Lost Their Jobs Last Week. See Your State.
             </h1>
     
             <svg width="1050px" height="500px">
@@ -73,30 +76,42 @@ barchart-->
                 d.end = new Date( d.end )
             })
             console.log(data)
-            // let groups = data.map(d => d.group)
-    
-            // let x = d3.scaleBand()
-            //     .domain(groups)
-            //     .paddingInner(.02)
-            //     .range([height - margin.bottom, margin.top])
-    
-            let x = d3.scaleTime()
-                .domain(d3.extent(data.map(function (d) { return d.end }))) //d3 extent
+
+            let dt = data.map(d => d.end)
+
+            let x = d3.scaleBand()
+                .domain(dt)
+                .paddingInner(.02)
                 .range([margin.left, width - margin.right])
 
             let y = d3.scaleLinear()
                 .domain([0, d3.max(data.map(d => d.value))])
                 .range([height - margin.bottom, margin.top])
     
-            let yAxisSettings = d3.axisLeft(y) //set axis to the left
+            let yAxisSettings = d3.axisRight(y) //set axis to the left
                 .ticks(5) //approx how many ticks, the function will not necesarily give you that number
                 .tickSize(-width) //size of tick lines
                 .tickPadding(10) //distance from tick labels to tick marks
+                .tickSizeOuter(0)
+                .tickFormat(d3.format(".2s"))
+                // .tickFormat(function(d) { return formatValue(d).replace('M', 'million'); });
+                // .tickSizeInner(0)
+
     
             let xAxisSettings = d3.axisBottom(x)
                 .tickSize(10)
                 // .tickFormat(d3.format(".0f")) //what format do you want https://github.com/d3/d3-format 
                 .tickPadding(10)
+                .ticks(10)
+                // .tickSizeOuter(0)
+                .tickSizeInner(0)
+                .tickFormat((d,i) => {
+                    if (i % 100 == 0) {
+                        return ""
+                    } else {
+                        return ""
+                    }
+                })
                 
     
             //adding to the axes to our chart
@@ -104,11 +119,14 @@ barchart-->
                 .attr("class", "x axis") //give each axis a class
                 .call(xAxisSettings)
                 .attr("transform", `translate(0,${height - margin.bottom})`)
+                
     
             let yAxisTicks = svg.append("g")
                 .attr("class", "y axis")
                 .call(yAxisSettings)
-                .attr("transform", `translate(${margin.left},0)`)
+                .attr("transform", `translate(${margin.left + width + 10},0)`)
+                .style("font-size", "20px")
+                .attr("font-weight", 100)
     
             let bars = svg.append("g")
                 .attr("class", "bars")
@@ -117,13 +135,51 @@ barchart-->
                 .join("rect")
                 // .attr("x", d => x(0))
                 .attr("x", d => x(d.end))
-                // .attr("width", d => x(d.end) - x(0))
+                .attr("height", d => height - y(d.value))
                 .attr("y", d => y(d.value))
-                .attr("height", y.bandwidth())
-    
-    
-    
-    
+                // .attr("width", x.bandwidth())
+                .style("fill", "#f85c1e")
+                .attr("width", d => {
+                if(d.value == 3283000) {
+                    return "4px"
+                }
+                else {
+                    return x.bandwidth()
+                }
+            })      
+
+
+            let avg = d3.mean(data, function(d) { return y(d.value) })
+
+            let mean_line = svg.append("line")
+                .attr("x1", margin.left)
+                .attr("x2", width + margin.left)
+                .attr("y1", avg)
+                .attr("y2", avg)
+                .style("stroke", "black")
+                .style("stroke-width", "0.3px");
+
+            svg.append("text")             
+                .attr("transform",
+                        "translate(" + (0) + " ," + 
+                                    (height + margin.top +50) + ")")
+                .style("text-anchor", "right")
+                .text("Source: Note: Official figures are seasonally adjusted. Source: Department of Labor")
+                .style("fill", "gray")
+                .style("font-size", 12);
+
+            svg.append("text")             
+                .attr("transform",
+                        "translate(" + (width * 0.85) + " ," + 
+                                    (height * 0.89) + ")")
+                .style("text-anchor", "right")
+                .text("Weekly average: 345,000")
+                .style("fill", "gray")
+                .style("font-size", 12)
+
+
+
+
         })
     
     </script>
