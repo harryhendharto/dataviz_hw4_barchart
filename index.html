@@ -124,6 +124,7 @@ barchart-->
                 .attr("transform", `translate(${margin.left + width + 10},0)`)
                 .style("font-size", "20px")
                 .attr("font-weight", 100)
+                .select(".domain").remove()
     
 
             // let timeframe = {
@@ -214,7 +215,7 @@ barchart-->
             svg.append("text")
                 .attr("font-weight", 500)             
                 .attr("transform",
-                        "translate(" + (width * 0.83) + " ," + 
+                        "translate(" + (width * 0.815) + " ," + 
                                     (height * 0.03) + ")")
                 .text("3,283,000")
                 .style("fill", "#f85c1e")
@@ -223,12 +224,21 @@ barchart-->
             svg.append("text")
                 .attr("font-weight", 500)             
                 .attr("transform",
-                        "translate(" + (width * 0.83) + " ," + 
+                        "translate(" + (width * 0.815) + " ," + 
                                     (height * 0.06) + ")")
                 .text("claims filed last week")
                 .style("fill", "#f85c1e")
                 .style("font-size", 16.5)
                 
+
+            svg.append('circle')
+                .attr("transform",
+                        "translate(" + (width) + " ," + 
+                                    (0) + ")")
+                .attr('r', 8)
+                .style('fill', '#f85c1e');
+
+            
 
         })
     
