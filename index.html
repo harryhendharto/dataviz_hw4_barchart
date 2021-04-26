@@ -11,7 +11,7 @@ barchart-->
         <style>
             .chart-container {
                 max-width: 1050px;
-                max-: 1050px;
+                max-height: 1050px;
                 /* border: 3px solid red; */
                 margin: 0 auto;
                 /* auto centers the div */
@@ -23,10 +23,6 @@ barchart-->
                 overflow: visible;
             }
     
-    
-            h1 {
-                /* border: 2px solid green; */
-            }
 
             .tick line{
                 opacity: 0.2;
@@ -117,7 +113,9 @@ barchart-->
             let xAxisTicks = svg.append("g")
                 .attr("class", "x axis") //give each axis a class
                 .call(xAxisSettings)
+                .style("font-size", "15px")
                 .attr("transform", `translate(0,${height - margin.bottom})`)
+                .attr("font-weight", 100)
                 
     
             let yAxisTicks = svg.append("g")
@@ -127,6 +125,43 @@ barchart-->
                 .style("font-size", "20px")
                 .attr("font-weight", 100)
     
+
+            // let timeframe = {
+            //     RangeStart: new Date('01-Jan-2008'),
+            //     RangeEnd: new Date('01-Jan-2012'),
+            //     Label: "Golden Period",
+            //     Color: "#3cfb34"
+            // };
+            
+            // let gTimeframe = svg.append("g").attr("class", "timeframe");
+
+            // gTimeframe.append("rect")
+            //     .attr("x", x(timeframe.RangeStart))
+            //     .attr("y", 0)
+            //     .attr("width", x(timeframe.RangeEnd) - x(timeframe.RangeStart))
+            //     .attr("height", 100)
+            //     .style("fill", "lightgrey");
+
+            const bandScale = d3.scaleBand()
+                .domain(data.map(d => d.end).slice(1))
+                .range([margin.left, width - margin.right])
+                .paddingInner(0) 
+
+            svg.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('fill', d => d.priority !== null ? 
+                                    d.priority === 'high' ? 'transparent' : 'transparent' :
+                                    'transparent')
+                .attr('x', d => x(new Date(d.end)))
+                .attr('y', margin.top)
+                .attr('width', bandScale.bandwidth())
+                .attr('height', height - margin.top - margin.bottom)
+
+
+            // add the bars
+
             let bars = svg.append("g")
                 .attr("class", "bars")
                 .selectAll(".bar")
@@ -163,7 +198,7 @@ barchart-->
                         "translate(" + (0) + " ," + 
                                     (height + margin.top +50) + ")")
                 .style("text-anchor", "right")
-                .text("Source: Note: Official figures are seasonally adjusted. Source: Department of Labor")
+                .text("Note: Official figures are seasonally adjusted. Source: Department of Labor")
                 .style("fill", "gray")
                 .style("font-size", 12);
 
@@ -176,8 +211,24 @@ barchart-->
                 .style("fill", "gray")
                 .style("font-size", 12)
 
+            svg.append("text")
+                .attr("font-weight", 500)             
+                .attr("transform",
+                        "translate(" + (width * 0.83) + " ," + 
+                                    (height * 0.03) + ")")
+                .text("3,283,000")
+                .style("fill", "#f85c1e")
+                .style("font-size", 35)
 
-
+            svg.append("text")
+                .attr("font-weight", 500)             
+                .attr("transform",
+                        "translate(" + (width * 0.83) + " ," + 
+                                    (height * 0.06) + ")")
+                .text("claims filed last week")
+                .style("fill", "#f85c1e")
+                .style("font-size", 16.5)
+                
 
         })
     
